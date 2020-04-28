@@ -1,2 +1,2 @@
 # eloquentJavascrip
- Javascript Practice with Eloquent Javascrip
+ Javascript Practice with Eloquent Javascript
