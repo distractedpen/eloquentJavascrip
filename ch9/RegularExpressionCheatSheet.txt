@@ -1,0 +1,35 @@
+/abc/ A sequence of characters
+/[abc]/ Any character from a set of characters
+/[^abc]/ Any character NOT in a set of characters
+/[0-9]/ Any character in a range of characters
+/x+/ One or more occurrences of the pattern x
+/x+?/ One or more occurrences, nongreedy
+/x*/ Zero or more occurrences
+/x?/ Zero or one occurrence
+/x{2, 4}/ Two to four occurrences
+/(abc)/ a group
+/a|b|c/ Any one of several Patterns
+/\d/ Any digit character
+/\w/ Any alphanumeric character (word character in English Alphabet)
+/\W/ Any Nonalphanumeric character
+/\s/ Any whitespace character (can catch certain non english characters)
+/\S/ Any Nonwhitespace character
+/./ Any character except newlines
+/\b/ A word boundry
+/^/ start of input
+/$/ end of input
+
+Methods:
+/x/.test(string) -> true/false
+match = /x/.exec(string) -> returns array with all matched groups. Has index property indicating where match started.
+
+Strings:
+"string".match(regExp)
+"string".search(regExp) -> returns starting position of match
+"string".replace(regExp, replacement string or function)
+
+Options on Regular expressions:
+/i case insensitive
+/g global expression: for replace, replace all instances
+/y sticky: will not search ahead in a string looking for a match
+/u Unicode: fixes problems when working with characters that take 2 code units (emoji)

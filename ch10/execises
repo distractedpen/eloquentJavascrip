@@ -1,0 +1,43 @@
+A modular robot:
+
+About the Robot file we wrote in Chapter 7, how could we make that program modular?
+The bindings are:
+roads
+buildGraph
+roadGraph
+VillageState
+runRobot
+randompick
+randomRobot
+mailRoute
+routeRobot
+findRoute
+goalOrientedRobot
+
+What modules would you create?
+    Graph: --> remove and have dep on NPM dijkstrajs 
+        buildGraph (export)
+        findRoute
+     Dep: None
+    Road:
+        roads
+        roadGraph (export)
+     Dep: Graph
+    Village:
+        VillageState (export)
+        randompick --> remove and have dep on NPM random-item package
+        runRobot (export)
+     Dep: Road
+    Robots:
+        randomRobot (export)
+        mailRoute
+        routeRobot (export)
+        goalOrientedRobot (export)
+      Dep: dijkstrajs (goalOrientedRobot), Road
+
+
+What modules are avaiable on NPM?
+Graphs --> dijkstrajs
+randompick --> random-item
+
+
