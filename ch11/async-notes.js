@@ -8,10 +8,10 @@ setTimeout(() => console.log("Tick"), 500);
 
 //data is usually stored as JSON-encodable data under names
 // an example of reading storage asynchronously
-import {bigOak} from "./crow-tech";
+import {bigOak} from "./modules/crow-tech";
 //file that would allow the computer to handle
 //request types
-import {defineRequestType} from "./crow-tech";
+import {defineRequestType} from "./modules/crow-tech";
 
 defineRequestType("note", (nest, content, source, done) => {
     console.log(`${nest.name} recieved note: ${content}`);
@@ -157,7 +157,7 @@ function availableNeighbors(nest) {
 // neighbor automatically sends the message to all of its neighbors
 // doesn't send backwards
 // if message is already in local state, ignore message
-import {everywhere} from "./crow-tech"
+import {everywhere} from "./modules/crow-tech"
 
 everywhere(nest => {
     nest.state.gossip = [];
@@ -247,3 +247,174 @@ function routeRequest(nest, target, type, content) {
 
 routeRequest(bigOak, "Church Tower", "note",
             "Incoming jackdaws!");
+
+//async functions
+
+requestType("storage", (nest, name) => storage(nest, name));
+
+function findInStorage(nest, name) {
+    return storage(nest, name).then(found => {
+        if (found != null) return found;
+        else return findInRemoteStorage(nest, name);
+    });
+}
+
+//connections is a Map, so Object.keys doesn't work
+//can use Array.from(Map.keys()) to turn keys iterator into an array
+
+function network(nest) {
+    return Array.from(nest.state.connnections.keys());
+}
+
+function findInRemoteStorage(nest, name) {
+    let sources = network(nest).filter(n => n !=nest.name);
+    function next() {
+        if (sources.length == 0) {
+            return Promise.reject(new Error("Not found"));
+        } else{
+            let source = sources[Math.floor(Math.random() *
+                                            sources.length)];
+            sources = sources.filter(n => n != source);
+            return routeRequest(nest, source, "storage", name)
+                .then(value => value != null ? value : nest(),
+                    next);
+        }
+    }
+    return next();
+}
+
+//re-write using async function
+//inside an async function
+//the word await can be put in front of an expression
+// to wait for a promis to resolve and only then continue
+// the execution of the function
+async function findInStorage(nest, name) {
+    //looks in local storage
+    let local = await storage(nest, name);
+    if (local != null) return local;
+
+    //looks in remote storage
+    let sources = network(nest).filter(n => n != nest.name);
+    while (sources.length > 0){
+        let source = sources[Math.floor(Math.random() *
+                                        sources.length)];
+        sources = sources.filter(n => n != source);
+        try{
+            let found = await routeRequest(nest, source, "storage",
+                                            name);
+            if (found != null) return found;
+        }catch (_) {}
+    }
+    throw new Error("Not found");
+}
+
+findInStorage(bigOak, "events on 2017-12-21")
+    .then(console.log);
+
+
+// Generators
+// function* function is paused upon reaching yield
+// control returns to the location of calling and the
+// yielded value is used. Control then returns to the
+// function* to change the yielding value
+// generator function return iterators:
+// the iterator has the next value in the set
+// and a flag if that value is the last value
+// this particular generator will never flag done
+// but the wrapping for loop takes care of that.
+function* powers(n) {
+    for (let current = n;; current *= n) {
+        yield current;
+    }
+}
+
+for (let power of powers(3)) {
+    if (power > 50) break;
+    console.log(power);
+}
+// -> 3
+// -> 9
+// -> 27
+
+//async behavior is hard to debug
+//the call stack for each async function is specific to that function
+//setTimeout is called with a 20 millisecond wait time.
+//the call to catch will never trigger, because the catch handler
+// will not be on the stack at the time the setTimeout function returns
+// its value.
+try{
+    setTimeout(() => {
+        throw new Error("Woosh");
+    }, 20);
+} catch (_) {
+    // This will not run
+    console.log("Caught!");
+}
+
+// Javascript environments can only run one program at a time
+// these events are placed in a queue called the event loop
+// when nothing is to be done, this loop is stopped.
+// as events come in, they are processed in the order they arrive
+// only one event is processed at a time
+
+// this example sets a timeout, but then dallies until after the timeout's intended
+// point of time, causing the timeout to be late
+let start = Date.now()
+setTimeout(() => {
+    console.log("Timeout ran at", Date.now() - start);
+}, 20);
+while (Date.now() < start + 50) {}
+console.log("Wasted time until", Date.now() - start);
+// -> Wasted time until 50
+// -> Timeout ran at 55
+// Timeout was suppose to end at 20
+
+//Promises resolve or reject as new events
+//They will wait until the current script finishes
+Promise.resolve("Done").then(console.log);
+console.log("Me first!");
+// -> Me first!
+// -> Done
+
+//async bugs
+function anyStorage(nest, source, name) {
+    if (source == nest.name) return storage(nest, name);
+    else return routeRequest(nest, source, "storage", name);
+}
+
+//This function is broken!
+// += doesn't work in async functions
+// because it looks at the 'current' value
+// the value of the string `~` will not have
+// anything until await anyStorage() is resolved
+async function chicks(nest, year) {
+    let list = "";
+    await Promise.all(network(nest).map(async name => {
+        list += `${name}: ${
+            await anyStorage(nest, name, `chicks in ${year}`)
+        }\n`;
+    }));
+    return list;
+}
+
+//arrow functions can be made async as well
+// async (arg) => {body}
+
+//Key note: computing new values is less error prone
+//          than changing existing values
+async function chicks(nest, year) {
+    let lines = network(nest).map(async name => {
+        return name + ": " +
+            await anyStorage(nest, name, `chicks in ${year}`);
+    });
+    return (await Promise.all(lines)).join("\n");
+}
+
+
+//async locateScalpel version 1
+async function locateScalpel(nest) {
+    let locations = network(nest).map(async name => {
+      return [name, await anyStorage(nest, name, "scalpel")];
+    });
+    return (await Promise.all(locations)).filter(([a, b]) => a == b)[0][0]; 
+}

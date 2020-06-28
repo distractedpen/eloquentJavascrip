@@ -31,27 +31,34 @@ class Group {
         return group;
     }
 
-    [Symbol.iterator] = function() {
+/*     [Symbol.iterator] = function() {
         return new GroupIterator(this);
-    }
+    } */
 }
 
-class GroupIterator {
-    constructor(group){
-        this.index = 0;
-        this.group = group;
+// class GroupIterator {
+//     constructor(group){
+//         this.index = 0;
+//         this.group = group;
+//     }
+
+//     next() {
+//         if (this.index >= this.group.elements.length) return {done: true};
+
+//         let result = { value: this.group.elements[this.index],
+//                       done: false};
+
+//         this.index++;
+//         return result;
+//     }
+// }
+
+//This iterator uses a generating function learning in chapter 11
+Group.prototype[Symbol.iterator] = function*() {
+    for (let i = 0; i < this.members.length; i++) {
+        yield this.members[i];
     }
-
-    next() {
-        if (this.index >= this.group.elements.length) return {done: true};
-
-        let result = { value: this.group.elements[this.index],
-                      done: false};
-
-        this.index++;
-        return result;
-    }
-}
+};
 
 for (let value of Group.from(["a", "b", "c"])) {
     console.log(value);
