@@ -1,0 +1,234 @@
+<!-- Test page for learning DOM-->
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="UTF-8">
+    <title>DOM practice Page! OwO</title>
+    <style>
+        #elephant{
+            color:fuchsia;
+            background:goldenrod;
+            font-style: italic;
+            font-size: 15pt;
+            display: none;
+        }
+
+    </style>
+    </head>
+
+    <body>
+        <!--Page Structure-->
+        <h1>This the the heading.</h1>
+        <p>This is a paragraph.</p>
+        <p>The midochondria is the <em>powerhouse</em> of the cell.</p>
+        <p>Here is a <img src="images\cat.png" width="100" height="100" alt="cat"> in the <img src="images\hat.png" width="171" height="133" alt="hat">.</p>
+        <p>Link to main page <a href="C:\Programming Files\JavaScript\eloquentJavaScript\index.html">here</a>.</p>
+        <button onclick="replaceImages()">Replace Images</button>
+        <button onclick="drawXs()">Draw X</button>
+        
+
+        <p>My ostrich Gertrude:</p>
+        <p><img id="gertrude" src="images\ostrich.png" width="100" height="100" alt="gertrude"></p>
+
+        <p><strong>ONE</strong></p>
+        <p><strong>TWO</strong></p>
+        <p><strong>THREE</strong></p>
+
+        <p data-classified="secret">The launch code is 0000000.</p>
+        <p data-classified="unclassified">I have two feet.</p>
+
+        <p style ="border: 5px solid blue">
+            I'm boxed in
+        </p>
+
+        <p><span id="one"></span></p>
+        <p><span id="two"></span></p>
+
+        This text is displayed <strong>inline</strong>,
+        <strong style="display: block"> as a block</strong>, and
+        <strong style="display: none"> not at all</strong>. <!--allows us to hide elements-->
+
+
+        <img id="elephant" src="images\purple_elephant.png" width="200" height="200" alt="purple elephant">
+        <button onclick="showElephant()">Click to see Purple Elephant</button>
+
+
+        <blockquote id="quote">
+            No book can ever be finished. While working on it we learn
+            just enough to find it immature the moment we turn away
+            from it.
+        </blockquote>
+
+        <p>And if you go chasing
+            <span class="animal">rabbits</span></p>
+        <p>And you know you're going to fall</p>
+        <p>Tell 'em a <span class="character">hookah smoking
+            <span class="animal">caterpillar</span></span></p>
+        <p>Has given you the call</p>
+
+        <p style="text-align: center">
+            <img id="animated_cat" src="images/small_cat.png" style="position: relative" width="200" height="200">
+        </p>
+
+        <!--Exercise 1-->
+        <h1>Mountains</h1>
+
+        <div id="mountains"></div>
+        <!--End Exercise 1-->
+
+
+        <!-- / Page Structure-->
+        <!-- Script Section-->
+        <script>
+            function talksabout(node, string) {
+                if (node.nodeType == Node.ELEMENT_NODE) {
+                    for (let i = 0; i < node.childNodes.length; i++) {
+                        if (talksabout(node.childNodes[i], string)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                } else if (node.nodeType == Node.TEXT_NODE) {
+                    return node.nodeValue.indexOf(string) > -1;
+                }
+            }
+            console.log(talksabout(document.body, "cell"));
+            //true
+
+            let link = document.body.getElementsByTagName("a")[0];
+            console.log(link.href);
+
+            let ostrich = document.getElementById("gertrude");
+            console.log(ostrich.src)
+            
+            let paragraphs = document.body.getElementsByTagName("p");
+            document.body.insertBefore(paragraphs[2], paragraphs[0]); // swaps positions
+            document.body.replaceChild(paragraphs[6], paragraphs[8]); // deletes original
+
+            function replaceImages() {
+                let images = document.body.getElementsByTagName("img");
+                for (let i = images.length - 1; i >= 0; i--){
+                    let image = images[i];
+                    if (image.alt) {
+                        let text = document.createTextNode(image.alt);
+                        image.parentNode.replaceChild(text, image);
+                    }
+                }
+            }
+
+            //converting from a live list to a solid list
+            let arrayish = {0: "one", 1: "two", length: 2};
+            let array = Array.from(arrayish);
+            console.log(array.map(s => s.toUpperCase()));
+
+            // create a new element node
+            // type = type of node
+            // ...children = child nodes to the main node
+            function elt(type, ...children) {
+                let node = document.createElement(type);
+                for (let child of children) {
+                    if (typeof child != "string") node.appendChild(child);
+                    else node.appendChild(document.createTextNode(child));
+                }
+                return node;
+            }
+
+            // example of elt
+            document.getElementById("quote").appendChild(
+                elt("footer", "-",
+                elt("strong", "Karl Popper"),
+                ", preface to the second edition of ",
+                elt("em", "The Open Society and Its Enemies"),
+                ", 1950"));
+
+            // giving elements an attribute name allows
+            // us to remove elements
+            let paras = document.body.getElementsByTagName("p");
+            for (let para of Array.from(paras)){
+                if (para.getAttribute("data-classified") == "secret") {
+                    para.remove();
+                }
+            }
+
+            let para = document.body.getElementsByTagName("p")[9];
+            console.log("clientHeight: ", para.clientHeight); //side of the space inside the element in px
+            console.log("offsetHeight: ", para.offsetHeight); //space the element takes up in px
+            console.log(para.getBoundingClientRect()) // displays element position
+                                                      // {bottom, height, left, right, top, width, x, y} 
+                                                      // relative to the the top left of the screen
+            console.log("pageXOffset: ", pageXOffset);
+            console.log("pageYOffset: ", pageYOffset);
+
+            function time(name, action) {
+             let start = Date.now(); // Current time in milliseconds
+             action();
+             console.log(name, "took", Date.now() - start, "ms");       
+            }
+
+            function drawXs(){
+                time("native", () => {
+                    let target = document.getElementById("one");
+                    while (target.offsetWidth < 2000) {
+                        target.appendChild(document.createTextNode("X"));
+                    }
+                });
+                // naive took 32 ms
+
+                time("clever", function() {
+                    let target = document.getElementById("two");
+                    target.appendChild(document.createTextNode("XXXXX"));
+                    let total = Math.ceil(2000 / (target.offsetWidth / 5));
+                    target.firstChild.nodeValue = "X".repeat(total);
+                });
+            }
+
+            //Example of making an element "colapse" and hide
+            function showElephant(){
+                let elephant = document.getElementById("elephant");
+                if (elephant.style.display == "block") elephant.style.display = "none";
+                else elephant.style.display = "block";
+
+            }
+
+            function count(selector) {
+                return document.querySelectorAll(selector).length; //not live, still not a real array
+            }
+            console.log(count("p"));
+            console.log(count(".animal"));
+            console.log(count("p .animal"));
+            console.log(count("p > .animal"));
+
+            let cat = document.getElementById("animated_cat")
+            let angle = Math.PI / 2;
+            function animate(time, lastTime) {
+                if (lastTime != null) {
+                    angle += (time - lastTime) * 0.001;
+                }
+                cat.style.top = (Math.sin(angle) * 20) + "px";
+                cat.style.left = (Math.cos(angle) * 200) + "px";
+                requestAnimationFrame(newTime => animate(newTime, time));
+            }
+            requestAnimationFrame(animate);
+
+            //Exercise 1
+            const MOUNTAINS = [
+                {name: "Kilimanjaro", height: 5895, place: "Tanzania"},
+                {name: "Everest", height: 8848, place: "Nepal"},
+                {name: "Mount Fuji", height: 3776, place: "Japan"},
+                {name: "Vaalserberg", height: 323, place: "Netherlands"},
+                {name: "Denali", height: 6168, place: "United States"},
+                {name: "Popocatepetl", height: 5465, place: "Mexico"},
+                {name: "Mont Blanc", height: 4808, place: "Italy/France"}
+            ];
+
+            let table = document.createElement("table");
+            for (let i = 0; i < MOUNTAINS.length; i++){
+                //
+                table.appendChild("tr");
+                for (let j = 0; j <MOUNTAINS[i].length; j++){
+                    table.appendChild("th")
+                }
+            }
+        </script>
+    </body>
+</html>
