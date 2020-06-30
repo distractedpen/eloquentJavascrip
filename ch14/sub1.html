@@ -76,6 +76,11 @@
         <div id="mountains"></div>
         <!--End Exercise 1-->
 
+        <!-- Exercise 2-->
+        <h1>Heading with a <span>span</span> element.</h1>
+        <p>A paragraph with <span>one</span>, <span>two</span>
+         spans.</p>
+        <!-- End Exercise 2-->
 
         <!-- / Page Structure-->
         <!-- Script Section-->
@@ -221,14 +226,64 @@
                 {name: "Mont Blanc", height: 4808, place: "Italy/France"}
             ];
 
+
             let table = document.createElement("table");
+            let headerLabels = Object.keys(MOUNTAINS[0]);
+            let header = document.createElement("tr");
+            table.appendChild(header);
+            for (let i = 0; i < headerLabels.length; i++){
+                let cell = document.createElement("th");
+                let data = document.createTextNode(headerLabels[i]);
+                header.appendChild(cell);
+                cell.appendChild(data);
+            }
+
             for (let i = 0; i < MOUNTAINS.length; i++){
-                //
-                table.appendChild("tr");
-                for (let j = 0; j <MOUNTAINS[i].length; j++){
-                    table.appendChild("th")
+                let row = document.createElement("tr");
+                table.appendChild(row);
+                let celldata = Object.values(MOUNTAINS[i]);
+                for (let j = 0; j < celldata.length; j++){
+                    let cell = document.createElement("td");
+                    let data = document.createTextNode(celldata[j]);
+                    if (typeof(celldata[j]) == "number" ) { // cell contains numerical data
+                        cell.style.textAlign = "right";
+                    }
+                    row.appendChild(cell);
+                    cell.appendChild(data);
                 }
             }
+
+            let mountains = document.getElementById("mountains");
+            mountains.appendChild(table);
+            // End Exercise 1
+
+            // Start Exercise 2
+            function byTagName(node, tagName) {
+                let tagList = [];
+                function next(node, tagName) {
+                for (let i = 0; i < node.childNodes.length; i++){
+                    if (node.childNodes[i].nodeName.toLowerCase() == tagName){
+                    tagList.push(node.childNodes[i].nodeName.toLowerCase());
+                    }
+                    next(node.childNodes[i], tagName);
+                }
+                }
+                next(node, tagName);
+                return tagList;
+            }
+            console.log(byTagName(document.body, "h1").length);
+            // → 1
+            console.log(byTagName(document.body, "span").length);
+            // → 3
+            let para2 = document.querySelector("p");
+            console.log(byTagName(para2, "span").length);
+            // → 2
+            // End Exercise 2
+
+            let here = document.body.querySelector("p");
+            let here_text = here.firstChild;
+            console.log(here_text)
+            console.log(here_text.parentNode.nodeName.toLowerCase())
         </script>
     </body>
 </html>
