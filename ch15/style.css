@@ -1,0 +1,31 @@
+#click_event_example {
+    /* display: flex; */
+    width: 200px;
+    height: 250px;
+    text-align: center;
+    background-color: grey;
+    margin: 50px;
+    position: relative;
+    color: rgb(0, 255, 234);
+}
+#onclick_example {
+    /*display: flex;*/
+    width: 200px;
+    height: 250px;
+    text-align: center;
+    background-color: blueviolet;
+    margin: 50px;
+    position: relative;
+    color: rgb(0, 255, 115);
+}
+
+#propagation {
+    /* display: flex; */
+    width: 200px;
+    height: 250px;
+    text-align: center;
+    background-color: rgb(217, 229, 230);
+    margin: 50px;
+    position: relative;
+    color: rgb(234, 0, 255);
+}

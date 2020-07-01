@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Handlers!</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    
+</head>
+<body>
+    <div id="click_event_example">   
+        <p>Click this document to activate the handler on this div.</p> 
+        <button id="button1">Click me</button>
+    </div>
+    <div onclick="" id="onclick_example">
+        <button id="act_once_button">Act-once button</button>
+        <button id="which_button">Click me any way you want</button>
+    </div>
+    <div id="propagation">
+        <p id="p1">A paragraph with a <button id="button_propagation">button</button>.</p>
+    </div>
+    <div id="event_target">
+        <button id="buttonA">A</button>
+        <button id="buttonB">B</button>
+        <button id="buttonC">C</button>
+    </div>
+    <div id="key_event">
+        <p>This div turns violet when you hold the V key.</p>
+    </div>
+
+    <p>Drag the bar to change its width:</p>
+    <div id="bar" style="background: orange; width: 60px; height: 20px;">
+    </div>
+
+    <div id="links">
+    <a href="https://developer.mozilla.org/" id="jokeLink">MDN</a>
+    <script src="ch15.js"></script> <!-- Must load scripts after DOM has loaded.-->
+    <a href="draw.html">Go to primative drawing app</a>
+    </div>
+</body>
+</html>
