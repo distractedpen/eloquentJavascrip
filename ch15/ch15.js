@@ -85,3 +85,34 @@ function moved(event) {
     }
 }
 
+//cannot run from local machine. Must be run from a different source
+/* let squareWorker = new Worker("code/squareworker.js");
+squareWorker.addEventListener("message", event => {
+    console.log("The worker responded: ", event.data);
+});
+squareWorker.postMessage(10);
+squareWorker.postMessage(24);
+ */
+
+let bombTimer = setTimeout(() => {
+    console.log("BOOM!");
+}, 500);
+
+if (Math.random() < 0.5) { // 50% chance
+    console.log("Defused.");
+    clearTimeout(bombTimer);
+}
+//cancelAnimationFrame works the same way.
+
+let ticks = 0;
+let clock = setInterval(() => {
+    console.log("tick", ticks++);
+    if (ticks == 10) {
+        clearInterval(clock);
+        console.log("stop.");
+    }
+}, 200);
+
+//can use setTimeout to keep events from being too time-consuming
+//called debouncing the event
+

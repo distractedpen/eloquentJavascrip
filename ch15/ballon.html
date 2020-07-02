@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ballon Pop</title>
+
+</head>
+<body>
+    <p>🎈</p>
+    <script>
+        let para = document.querySelector("p");
+        let size = 15;
+        let pop = Math.floor(Math.random() * 100);
+        para.style.fontsize = size + "px";
+        window.addEventListener("keydown", update);
+
+        function update(event){
+            if (size > pop){
+                para.textContent = "💥";
+                window.removeEventListener("keydown", update);
+            }
+            if (event.key == "ArrowUp"){
+                event.preventDefault();
+                size *= 1.1;
+                para.style.fontSize = Math.floor(size) + "px";
+            }
+            else if (event.key == "ArrowDown") {
+                event.preventDefault();
+                size /= 1.1
+                para.style.fontSize = Math.floor(size) + "px";
+            }
+        }
+    </script>
+</body>
+</html>

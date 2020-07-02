@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Focus Events</title>
+</head>
+<body>
+    <p>Name: <input type="text" data-help="Your full name"></p>
+    <p>Age: <input type="text" data-help="Your age in years"></p>
+    <p id="help"></p>
+    <p><a href="sub2.html">Click here to return to sub2.</a></p>
+
+    <script>
+        let help = document.querySelector("#help");
+        let fields = document.querySelectorAll("input");
+        for (let field of Array.from(fields)) {
+            field.addEventListener("focus", event => {
+                let text = event.target.getAttribute("data-help");
+                help.textContent = text;
+            });
+            field.addEventListener("blur", event => {
+                help.textContent = "";
+            });
+        }
+        window.addEventListener("beforeunload", event => {
+            event.preventDefault();
+            event.returnValue = "";
+        });
+    </script>
+</body>
+</html>
