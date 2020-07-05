@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabs</title>
+</head>
+<body>
+    <tab-panel>
+        <div data-tabname="one">Tab one</div>
+        <div data-tabname="two">Tab two</div>
+        <div data-tabname="three">Tab three</div>
+    </tab-panel>
+    <script>
+        function asTabs(node) {
+            //put tabs into an array
+            let tabs = [];
+            for (let i = 0; i < node.children.length; i++) {
+                let tab = node.children[i];
+                tabs.push(tab);
+            }
+
+
+            //Create and display the buttons
+            let buttons = [];
+            for (let tab of Array.from(tabs)){
+                let button = document.createElement("button");
+                button.textContent = tab.getAttribute("data-tabname");
+                buttons.push(button);
+            }
+            for (let i = buttons.length -1 ; i >= 0; i--) {
+                node.insertBefore(buttons[i], node.firstChild);
+            }
+            
+            //Set default display of the tabs
+            for (let tab of Array.from(tabs)){
+                tab.style.display = "none";
+            }
+            tabs[0].style.display = "";
+            buttons[0].disabled= true;
+
+            //set the onclick function for each button
+            document.body.addEventListener("click", event => {
+                if (event.target.nodeName == "BUTTON"){
+                    event.preventDefault();
+                    for (let tab of Array.from(tabs)){
+                        if (event.target.textContent == tab.getAttribute("data-tabname")) {
+                            tab.style.display = "block";
+                            event.target.disabled = true;
+                        }
+                        else {
+                            tab.style.display = "none";
+                            
+                        }
+                        for (let button of buttons){
+                            if (button != event.target){
+                                button.disabled = false;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        asTabs(document.querySelector("tab-panel"));
+
+        function showTab(tabs){
+
+        }
+    </script>
+    
+</body>
+</html>
