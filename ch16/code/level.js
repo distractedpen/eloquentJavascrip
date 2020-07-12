@@ -289,6 +289,37 @@ const levelChars = {
     "=": Lava, "|": Lava, "v": Lava
 };
 
+//Exercise 3
+//Complete the constructor, update, and collide methods
+class Monster {
+    constructor(pos, speed) {
+        this.pos = pos;
+        this.speed = speed;
+    }
+
+    get type() { return "monster"; }
+
+    static create(pos) {
+      return new Monster(pos.plus(new Vec(0, -1), new Vec(2, 0)));
+    }
+
+    update(time, state) {
+        let newPos = this.pos.plus(this.speed.times(time));
+        if (!state.level.touches(newPos, this.size, "wall")){
+            return new Monster(newPos, this.speed);
+        } else {
+            return new Monster(this.pos, this.speed.times(-1));
+        }
+    }
+
+    collide(state) {
+    }
+}
+Monster.prototype.size = new Vec(1.2, 2);
+levelChars["M"] = Monster;
+
+
+
 //Collision and Movement
 Level.prototype.touches = function(pos, size, type) {
     var xStart = Math.floor(pos.x);
@@ -401,20 +432,12 @@ function trackKeys(keys) {
     }
     window.addEventListener("keydown", track);
     window.addEventListener("keyup", track);
+    down.unregister = () => {
+        window.removeEventListener("keydown", track);
+        window.removeEventListener("keyup", track);
+    };
     return down;
 }
-
-const arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
-
-
-function gamePaused() {
-    function track(event) {
-        if (event.key == "Escape") return true;
-        else return false;
-    }
-    window.addEventListener("keydown", track);
-}
-const paused = gamePaused();
 
 function runAnimation(frameFunc) {
     let lastTime = null;
@@ -433,9 +456,30 @@ function runLevel(level, Display) {
     let display = new Display(document.body, level);
     let state = State.start(level);
     let ending = 1;
-    let paused = false;
+    let running = "yes";
+    
     return new Promise(resolve => {
-        runAnimation(time => {
+        function escHandler(event) {
+            if (event.key != "Escape") return;
+            event.preventDefault();
+            if (running == "no") {
+                running = "yes";
+                runAnimation(frame);
+            } else if (running == "yes") {
+                running = "pausing";
+            } else {
+                running = "yes";
+            }
+        }
+        window.addEventListener("keydown", escHandler);
+        let arrowKeys = trackKeys(["ArrowLeft", "ArrowRight", "ArrowUp"]);
+
+        function frame(time){
+            if (running == "pausing"){
+                running = "no";
+                return false;
+            }
+
             state = state.update(time, arrowKeys);
             display.syncState(state);
             if (state.status == "playing") {
@@ -445,10 +489,13 @@ function runLevel(level, Display) {
                 return true;
             } else {
                 display.clear();
+                window.removeEventListener("keydown", escHandler);
+                arrowKeys.unregister();
                 resolve(state.status);
                 return false;
             }
-        });
+        }
+        runAnimation(frame);
     });
 }
 
@@ -548,4 +595,18 @@ DOMDisplay.prototype.scrollPlayerIntoView = function(state) {
 //END DOMDisplay
 
 //Start of Game
-runGame(GAME_LEVELS, DOMDisplay);
+//runGame(GAME_LEVELS, DOMDisplay);
+runLevel(new Level(`
+..................................
+.################################.
+.#..............................#.
+.#..............................#.
+.#..............................#.
+.#...........................o..#.
+.#..@...........................#.
+.##########..............########.
+..........#..o..o..o..o..#........
+..........#...........M..#........
+..........################........
+..................................
+`), DOMDisplay);
