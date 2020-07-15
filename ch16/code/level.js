@@ -223,10 +223,10 @@ class Vec {
     constructor(x, y) {
         this.x = x; this.y = y;
     }
-    plus(other) {
+    plus (other) {
         return new Vec(this.x + other.x, this.y + other.y);
     }
-    times(factor){
+    times (factor){
         return new Vec(this.x * factor, this.y * factor);
     }
 }
@@ -300,7 +300,7 @@ class Monster {
     get type() { return "monster"; }
 
     static create(pos) {
-      return new Monster(pos.plus(new Vec(0, -1), new Vec(2, 0)));
+      return new Monster(pos.plus(new Vec(0, -1)), new Vec(2, 0));
     }
 
     update(time, state) {
@@ -313,6 +313,10 @@ class Monster {
     }
 
     collide(state) {
+        if (state.player.pos.y > this.pos.y && state.player.pos.x <= this.pos.x) {
+            // remove monster from game
+        }
+        else { return new State(state.level, state.actors, "lost"); }
     }
 }
 Monster.prototype.size = new Vec(1.2, 2);
@@ -592,11 +596,7 @@ DOMDisplay.prototype.scrollPlayerIntoView = function(state) {
         this.dom.scrollTop = center.y + margin - height;
     }
 };
-//END DOMDisplay
-
-//Start of Game
-//runGame(GAME_LEVELS, DOMDisplay);
-runLevel(new Level(`
+const MonsterLevel = `
 ..................................
 .################################.
 .#..............................#.
@@ -609,4 +609,9 @@ runLevel(new Level(`
 ..........#...........M..#........
 ..........################........
 ..................................
-`), DOMDisplay);
+`;
+//END DOMDisplay
+
+//Start of Game
+//runGame(GAME_LEVELS, DOMDisplay);
+runLevel(new Level(MonsterLevel), DOMDisplay);
