@@ -5,11 +5,15 @@
     <title>Shapes</title>
 </head>
 <body>
+    <p></p>
     <canvas width="600" height="200"></canvas>
     <script>
         let cx = document.querySelector("canvas").getContext("2d");
         //drawTrap(cx, 100, 10, 50, 50, 90);
-        drawDiamond(cx, 0, 0, 50, 50, "red");
+        //drawDiamond(cx, 50, 50, 50, 50, "red");
+        //drawZigzag(cx, 0, 0, 50, 50, 5);
+        drawSpiral(cx, 100, 100, 100, 25);
+        
         function drawTrap(cx, x, y, height, base_top, base_bottom) {
             cx.beginPath();
             cx.moveTo(x, y);
@@ -28,12 +32,36 @@
 
         function drawDiamond(cx, x, y, width, height, color) {
             cx.fillStyle = color;
-            //cx.translate(x, y);
+            cx.translate(x,y);
             cx.rotate(0.25 * Math.PI);
-            cx.translate(x + width * 2, y + height / 2);
+            cx.translate(0, 0);
             cx.fillRect(x, y, width, height);
-            
+            cx.resetTransform();
         }
+
+        function drawZigzag(cx, x, y, width, height, spacing) {
+            cx.beginPath();
+            cx.moveTo(x,y);
+            let vertex = Math.floor(height / spacing);
+            for (let i = 1; i < vertex; i++) {
+                if (i % 2 == 1) cx.lineTo(x + width, y + spacing);
+                else if (i % 2 == 0) cx.lineTo(x, y + spacing);
+                y += spacing;
+            }
+            cx.stroke();
+        }
+
+        function drawSpiral(cx, center_x, center_y, radius) {
+            let delta = radius / 100;
+            cx.beginPath();
+            // calculate starting point on spiral
+            for (let i = 0; i < 100; i ++) {
+                // move to next point on the spiral
+                // subtract from radius
+            }
+            cx.stroke();
+        }
+
     </script>
 </body>
 </html>
