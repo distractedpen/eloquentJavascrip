@@ -313,10 +313,14 @@ class Monster {
     }
 
     collide(state) {
-        if (state.player.pos.y > this.pos.y && state.player.pos.x <= this.pos.x) {
-            // remove monster from game
+        if (state.player.pos.y + state.player.size.y >= this.pos.y) {
+            let filtered = state.actors.filter(a => a != this);
+            let status = state.status;
+            return new State(state.level, filtered, status);
         }
-        else { return new State(state.level, state.actors, "lost"); }
+        else { 
+            return new State(state.level, state.actors, "lost"); 
+        }
     }
 }
 Monster.prototype.size = new Vec(1.2, 2);

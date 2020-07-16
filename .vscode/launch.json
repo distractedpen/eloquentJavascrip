@@ -5,14 +5,14 @@
             "name": "Launch Chrome",
             "request": "launch",
             "type": "pwa-chrome",
-            "url": "file:///C:/Programming%20Files/JavaScript/eloquentJavaScript/ch16/game.html",
+            "url": "file:///C:/Programming%20Files/JavaScript/eloquentJavaScript/ch17/shapes.html",
             "webRoot": "${workspaceFolder}"
         },
         {
             "name": "Launch Edge",
             "request": "launch",
             "type": "pwa-msedge",
-            "url": "file:///C:/Programming%20Files/JavaScript/eloquentJavaScript/ch16/game.html",
+            "url": "file:///C:/Programming%20Files/JavaScript/eloquentJavaScript/ch17/shapes.html",
             "webRoot": "${workspaceFolder}"
         },
     ]
