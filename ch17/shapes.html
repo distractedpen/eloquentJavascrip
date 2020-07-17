@@ -12,8 +12,9 @@
         //drawTrap(cx, 100, 10, 50, 50, 90);
         //drawDiamond(cx, 50, 50, 50, 50, "red");
         //drawZigzag(cx, 0, 0, 50, 50, 5);
-        drawSpiral(cx, 100, 100, 100, 25);
-        
+        drawSpiral(cx, 300, 100, 25);
+        //drawStar(cx, 100, 100, 50, 8, "yellow");
+        //drawPolygon(cx, 300, 100, 50, 6, "black");
         function drawTrap(cx, x, y, height, base_top, base_bottom) {
             cx.beginPath();
             cx.moveTo(x, y);
@@ -54,12 +55,48 @@
         function drawSpiral(cx, center_x, center_y, radius) {
             let delta = radius / 100;
             cx.beginPath();
-            // calculate starting point on spiral
+            cx.translate(center_x, center_y);
+            let angle = 0;
+            cx.moveTo(radius * Math.cos(angle), radius * Math.sin(angle));
             for (let i = 0; i < 100; i ++) {
-                // move to next point on the spiral
-                // subtract from radius
+                cx.lineTo(radius * Math.cos(angle), radius * Math.sin(angle));
+                angle -= Math.PI / 12;
+                radius -= delta;
             }
             cx.stroke();
+            cx.resetTransform();
+        }
+
+        function drawStar(cx, center_x, center_y, radius, points, color) {
+            cx.beginPath();
+            cx.fillStyle = color;
+            cx.translate(center_x, center_y);
+            let angle = 0;
+            cx.moveTo(radius * Math.cos(angle), radius * Math.sin(angle));
+            for (let i = 0; i < 12; i++) {
+                cx.lineTo(radius*Math.cos(angle), radius*Math.sin(angle));
+                //cx.quadraticCurveTo(center_x, center_y, radius * Math.cos(angle), radius * Math.sin(angle));
+                angle -= Math.PI / points;
+                cx.stroke();
+            }
+            //cx.fill();
+            cx.resetTransform();
+
+        }
+
+        function drawPolygon(cx, center_x, center_y, points, color){
+            cx.beginPath();
+            cx.fillStyle = color;
+            cx.translate(center_x, center_y);
+            let angle = 0;
+            cx.moveTo(radius * Math.cos(angle), radius * Math.sin(angle));
+            for (let i = 0; i < 100; i ++) {
+                cx.lineTo(radius * Math.cos(angle), radius * Math.sin(angle));
+                angle -= Math.PI / 12;
+            }
+            cx.stroke();
+            cx.resetTransform();
+        }
         }
 
     </script>
