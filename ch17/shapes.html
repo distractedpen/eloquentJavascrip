@@ -13,7 +13,20 @@
         //drawDiamond(cx, 50, 50, 50, 50, "red");
         //drawZigzag(cx, 0, 0, 50, 50, 5);
         //drawSpiral(cx, 300, 100, 25);
-        drawStar(cx, 100, 100, 50, 8, "yellow");
+        drawStar(cx, 100, 100, 50, 10, "red");
+        // cx.beginPath();
+        // cx.moveTo(100 + 20, 100); //circle center
+        // //cx.lineTo(100 + 20, 100); // move to circle edge (radius = 20)
+        // let sides = 8;
+        // let angle = -Math.PI / 4;
+        // while (sides > 0) {
+        //     cx.quadraticCurveTo(100, 100, 100 + 20 *Math.cos(angle), 100 + 20 * Math.sin(angle));
+        //     angle -= Math.PI / 4;
+        //     cx.stroke();
+        //     sides--;
+        // }
+        
+        
 
         function drawTrap(cx, x, y, height, base_top, base_bottom) {
             cx.beginPath();
@@ -68,19 +81,19 @@
         }
 
         function drawStar(cx, center_x, center_y, radius, points, color) {
-            cx.beginPath();
+            //cx.fillRect(center_x, center_y, 1, 1);
+            const angle = -Math.PI / (points / 2);
             cx.fillStyle = color;
-            cx.translate(center_x, center_y);
-            let angle = 0;
-            cx.moveTo(radius * Math.cos(angle), radius * Math.sin(angle));
-            for (let i = 0; i <= points; i++) {
-                //cx.lineTo(radius*Math.cos(angle), radius*Math.sin(angle));
-                cx.quadraticCurveTo(center_x, center_y, radius * Math.cos(angle), radius * Math.sin(angle));
-                angle += 2*Math.PI / points;
-                cx.stroke();
+            cx.beginPath();
+            cx.moveTo(center_x + radius, center_y);
+            let currentangle = angle;
+            while (points >= -1) {
+                //cx.lineTo(center_x + Math.cos(angle), center_y + Math.sin(angle));
+                cx.quadraticCurveTo(center_x, center_y, center_x + radius * Math.cos(currentangle), center_y + radius * Math.sin(currentangle));
+                currentangle -= angle;
+                points--;
             }
-            //cx.fill();
-            cx.resetTransform();
+            cx.fill();
         }
 
     </script>
